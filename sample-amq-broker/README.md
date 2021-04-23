@@ -1,34 +1,24 @@
-# Install the helm repo
+# AMQ Sample
 
-```
-helm repo add litmuschaos https://litmuschaos.github.io/litmus-helm/
-```
-
-# Install the helm chart for the Litmus operator
-
-```
-helm install chaos litmuschaos/litmus --namespace=litmus
-```
-
-# In this guide, we shall describe the steps to inject pod-delete chaos on an nginx application already deployed in the nginx namespace. If you don't have this setup you can easily create one by running these two commands:
+In this guide, we shall describe the steps to inject pod-delete chaos on an nginx application already deployed in the nginx namespace. If you don't have this setup you can easily create one by running these two commands:
 
 ```
 oc apply -f https://hub.litmuschaos.io/api/chaos/1.13.3\?file\=charts/generic/experiments.yaml -n amq-broker
 ```
 
-# Create RBAC configuration to let Litmus access the resources
+## Create RBAC configuration to let Litmus access the resources
 
 ```
 oc apply -f rbac.yaml
 ```
 
-# Annotate your application
+## Annotate your application
 
 ```
 oc annotate sts/amq-broker-ss litmuschaos.io/chaos="true" -n amq-broker
 ```
 
-# Prepare ChaosEngine
+## Prepare ChaosEngine
 
 Overriding these values if necessary
 
@@ -51,19 +41,19 @@ Overriding these values if necessary
               value: 'false'
 ```
 
-# Run Chaos
+## Run Chaos
 
 ```
 oc apply -f chaosengine.yaml -n amq-broker
 ```
 
-# Observe Chaos results
+## Observe Chaos results
 
 ```
 oc describe chaosresult/amq-broker-chaos-pod-delete -n amq-broker
 ```
 
-# Uninstallation
+## Uninstallation
 
 Firstly, delete any active ChaosEngines on the cluster, followed by the deletion of the Operator manifest.
 
@@ -74,4 +64,3 @@ kubectl delete chaosengine --all -n <namespace>
 ```
 kubectl delete -f https://litmuschaos.github.io/litmus/litmus-operator-v1.13.3.yaml
 ```
-
